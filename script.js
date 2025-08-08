@@ -1,31 +1,42 @@
-const apiBaseUrl = 'https://script.google.com/macros/s/PASTE_YOUR_WEB_APP_URL/exec';
+const apiUrl = "https://script.google.com/macros/s/AKfycby8_N2AYqbOSDeLLAq_a2drsHka2ZDcOMM64UEFAyQXiwrLwPqOqn6rPWtNtH1wfuCzTA/exec";
 
-let currentRow = 1;
+let data = [];
+let currentIndex = 0;
 
-async function loadRow(rowNumber) {
-  const res = await fetch(`${apiBaseUrl}?row=${rowNumber}`);
-  const data = await res.json();
-
-  if (data.end) {
-    document.getElementById("word").innerText = "✅ Done!";
-    document.getElementById("meaning").innerText = "You've reached the end of the list.";
-    document.getElementById("nextBtn").disabled = true;
-    return;
+async function fetchData() {
+  try {
+    const res = await fetch(apiUrl);
+    data = await res.json();
+    if (data.length === 0) {
+      document.getElementById("word").innerText = "No data.";
+      return;
+    }
+    showCurrent();
+  } catch (err) {
+    document.getElementById("word").innerText = "Error loading data.";
+    console.error(err);
   }
-
-  document.getElementById("word").innerText = data.word || "No word";
-  document.getElementById("meaning").innerText = data.meaning || "No meaning";
 }
 
-function loadNext() {
-  loadRow(currentRow);
-  currentRow++;
+function showCurrent() {
+  const row = data[currentIndex];
+  document.getElementById("word").innerText = row.word || "—";
+  document.getElementById("meaning").innerText = row.meaning || "—";
+}
+
+function nextSlide() {
+  if (currentIndex < data.length - 1) {
+    currentIndex++;
+    showCurrent();
+  } else {
+    document.getElementById("word").innerText = "✅ Done!";
+    document.getElementById("meaning").innerText = "You’ve seen all the words.";
+  }
 }
 
 function reset() {
-  currentRow = 1;
-  document.getElementById("nextBtn").disabled = false;
-  loadNext();
+  currentIndex = 0;
+  showCurrent();
 }
 
-window.onload = loadNext;
+window.onload = fetchData;
