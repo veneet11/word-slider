@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Word Slides</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="card" id="card">
+  <div class="card">
     <h1 id="word">Loading...</h1>
     <p id="meaning"></p>
-    <button id="nextBtn" onclick="loadNext()">Next</button>
-<button onclick="reset()">Restart</button>
+    <div class="buttons">
+      <button onclick="nextSlide()">Next</button>
+      <button onclick="reset()">Restart</button>
+    </div>
   </div>
   <script src="script.js"></script>
-  <button id="nextBtn" onclick="loadNext()">Next</button>
-<button onclick="reset()">Restart</button>
-
 </body>
 </html>
