@@ -1,19 +1,25 @@
-const apiUrl = 'https://script.google.com/macros/s/AKfycby8_N2AYqbOSDeLLAq_a2drsHka2ZDcOMM64UEFAyQXiwrLwPqOqn6rPWtNtH1wfuCzTA/exec';
+const apiBaseUrl = 'https://script.google.com/macros/s/PASTE_YOUR_WEB_APP_URL/exec';
 
-async function loadNew() {
+let currentRow = 1;
+
+async function loadNext() {
   document.getElementById("word").innerText = "Loading...";
   document.getElementById("meaning").innerText = "";
 
-  try {
-    const res = await fetch(apiUrl);
-    const data = await res.json();
+  const res = await fetch(`${apiBaseUrl}?row=${currentRow}`);
+  const data = await res.json();
 
-    document.getElementById("word").innerText = data["Word"] || data["word"] || "No word";
-    document.getElementById("meaning").innerText = data["Meaning"] || data["meaning"] || "No meaning";
-  } catch (err) {
-    document.getElementById("word").innerText = "❌ Error";
-    document.getElementById("meaning").innerText = err.message;
+  if (data.end) {
+    document.getElementById("word").innerText = "✅ Done!";
+    document.getElementById("meaning").innerText = "You've reached the end of the list.";
+    document.querySelector("button").disabled = true;
+    return;
   }
+
+  document.getElementById("word").innerText = data.word || "No word";
+  document.getElementById("meaning").innerText = data.meaning || "No meaning";
+
+  currentRow++; // Move to next for next button click
 }
 
-window.onload = loadNew;
+window.onload = loadNext;
